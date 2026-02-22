@@ -1,0 +1,50 @@
+services:
+  api-golang:
+    image: hkdarealest/devops-directive-docker-course-api-golang:0.1.0
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://postgres:foobarbaz@postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api-node:
+    image: hkdarealest/devops-directive-docker-course-api-node:0.1.0
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:foobarbaz@postgres:5432/postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  client-react-nginx:
+    image: hkdarealest/devops-directive-docker-course-client-react-nginx:0.1.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api-golang
+      - api-node
+
+  load-generator-python:
+    image: hkdarealest/devops-directive-kubernetes-course-load-generator-python:0.1.0
+    environment:
+      - API_URL=http://api-golang:8000/
+      - DELAY_MS=100
+    depends_on:
+      - api-golang
+      - api-node
+  postgres:
+    image: postgres:15.3-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=foobarbaz
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
