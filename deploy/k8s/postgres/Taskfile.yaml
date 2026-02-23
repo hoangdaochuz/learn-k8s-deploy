@@ -1,0 +1,12 @@
+version: "3"
+tasks:
+  install-postgres:
+    desc: Deploy postgres using directly kubenestes manifests
+    cmds:
+      - kubectl create namespace postgres --dry-run=client -o yaml | kubectl apply -f -
+      - kubectl apply -f simple-postgres.yaml
+  apply-initial-db-migration-job:
+    desc: Apply initial db migration job
+    cmds:
+      - kubectl apply -f Secret.yaml
+      - kubectl apply -f Job.db-migrator.yaml

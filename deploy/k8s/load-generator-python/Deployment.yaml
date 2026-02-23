@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-generator-python-deployment
+  namespace: demo-app
+spec:
+  selector:
+    matchLabels:
+      app: load-generator-python
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: load-generator-python
+    spec:
+      containers:
+        - name: load-generator-python
+          image: hkdarealest/devops-directive-kubernetes-course-load-generator-python:0.1.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+          env:
+            - name: API_URL
+              value: "http://api-golang-service.demo-app.svc.cluster.local:8000"
+            - name: DELAY_MS
+              value: "1000"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault

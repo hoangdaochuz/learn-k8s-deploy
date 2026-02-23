@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-node-deployment
+  namespace: demo-app
+spec:
+  selector:
+    matchLabels:
+      app: api-node
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: api-node
+    spec:
+      containers:
+        - name: api-node
+          image: hkdarealest/devops-directive-docker-course-api-node:0.1.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: PORT
+              value: "3000"
+          envFrom:
+            - secretRef:
+                name: api-node-secret
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 3000
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault

@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: client-react-ingress
+  namespace: demo-app
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`learn-k8s-kayn.work.gd`)
+      kind: Rule
+      services:
+        - kind: Service
+          name: client-react-service
+          port: 8080
+          scheme: http

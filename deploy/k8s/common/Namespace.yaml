@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: "2026-02-23T08:26:48Z"
+  labels:
+    kubernetes.io/metadata.name: demo-app
+  name: demo-app
+  resourceVersion: "1771835208627759024"
+  uid: 248e128b-4fb7-4cc6-9034-e78a8a9c0ddd
+spec:
+  finalizers:
+    - kubernetes
+status:
+  phase: Active

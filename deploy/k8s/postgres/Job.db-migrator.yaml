@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrator
+  namespace: demo-app
+spec:
+  template:
+    spec:
+      containers:
+        - name: db-migrator
+          image: hkdarealest/devops-directive-kubernetes-course-db-migrator:0.1.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - -path=/app/migrations
+            - -database=$(DATABASE_URL)?sslmode=disable
+            - up
+          envFrom:
+            - secretRef:
+                name: db-migrator-secret
+      restartPolicy: OnFailure

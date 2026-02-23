@@ -1,0 +1,38 @@
+version: "3"
+includes:
+  common:
+    taskfile: ./common/Taskfile.yaml
+    dir: ./common
+  postgres:
+    taskfile: ./postgres/Taskfile.yaml
+    dir: ./postgres
+
+tasks:
+  apply-api-golang:
+    desc: Apply api-golang manifests
+    cmds:
+      - kubectl apply -f ./api-golang
+  apply-api-node:
+    desc: Apply api-node manifests
+    cmds:
+      - kubectl apply -f ./api-node
+  apply-client-react:
+    desc: Apply client-react manifests
+    cmds:
+      - kubectl apply -f ./client-react
+  apply-load-generator-python:
+    desc: Apply load-generator-python manifests
+    cmds:
+      - kubectl apply -f ./load-generator-python
+
+  apply-all:
+    cmds:
+      - task: common:apply-namespace
+      - task: postgres:install-postgres
+      - task: postgres:apply-initial-db-migration-job
+      - task: common:deploy-traefik
+      - task: common:apply-traefik-middleware
+      - task: apply-api-golang
+      - task: apply-api-node
+      - task: apply-client-react
+      - task: apply-load-generator-python

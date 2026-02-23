@@ -1,0 +1,16 @@
+version: "3"
+tasks:
+  apply-namespace:
+    desc: Apply namespace manifest
+    cmds:
+      - kubectl apply -f Namespace.yaml
+      - kubens demo-app
+  deploy-traefik:
+    desc: Deploy traefik ingress controller using Helm
+    cmds:
+      - helm repo add traefik https://traefik.github.io/charts
+      - helm upgrade --install -n traefik --create-namespace traefik traefik/traefik --version 20.8.0
+  apply-traefik-middleware:
+    desc: Apply traefik middleware
+    cmds:
+      - kubectl apply -f TraefikMiddleware.yaml
