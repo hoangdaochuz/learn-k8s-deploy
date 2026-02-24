@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-generator-python-deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: load-generator-python
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          env:
+            - name: API_URL
+              value: "http://api-golang-service.demo-app-staging.svc.cluster.local:8000"

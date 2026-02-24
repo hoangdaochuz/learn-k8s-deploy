@@ -21,18 +21,42 @@ tasks:
     cmds:
       - kubectl apply -f ./client-react
   apply-load-generator-python:
-    desc: Apply load-generator-python manifests
+    desc: Apply load-generator-python manifests to a specific namespace
     cmds:
-      - kubectl apply -f ./load-generator-python
+      - kubectl apply -f ./load-generator-python -n {{.NAMESPACE}}
+    requires:
+      vars: [NAMESPACE]
+  deploy-staging:
+    desc: Deploy staging manifests
+    cmds:
+      - kubectl kustomize ./kustomize/staging | yq | kubectl apply -f -
+  deploy-production:
+    desc: Deploy production manifests
+    cmds:
+      - kubectl kustomize ./kustomize/production | yq | kubectl apply -f -
 
-  apply-all:
+  apply-staging-namespace:
+    desc: Create the staging namespace
     cmds:
-      - task: common:apply-namespace
+      - kubectl create namespace demo-app-staging --dry-run=client -o yaml | kubectl apply -f -
+  apply-production-namespace:
+    desc: Create the production namespace
+    cmds:
+      - kubectl create namespace demo-app-production --dry-run=client -o yaml | kubectl apply -f -
+
+  apply-all-staging:
+    desc: Deploy all resources for staging environment
+    cmds:
+      - task: apply-staging-namespace
       - task: postgres:install-postgres
       - task: postgres:apply-initial-db-migration-job
       - task: common:deploy-traefik
-      - task: common:apply-traefik-middleware
-      - task: apply-api-golang
-      - task: apply-api-node
-      - task: apply-client-react
-      - task: apply-load-generator-python
+      - task: deploy-staging
+  apply-all-production:
+    desc: Deploy all resources for production environment
+    cmds:
+      - task: apply-production-namespace
+      - task: postgres:install-postgres
+      - task: postgres:apply-initial-db-migration-job
+      - task: common:deploy-traefik
+      - task: deploy-production

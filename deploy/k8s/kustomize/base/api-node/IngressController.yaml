@@ -1,18 +1,18 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: api-golang-ingress
+  name: api-node-ingress
   namespace: demo-app
 spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`learn-k8s-kayn.work.gd`) && PathPrefix(`/api/golang`)
+    - match: #Host(`learn-k8s-kayn.work.gd`) && PathPrefix(`/api/node`)
       kind: Rule
       services:
         - kind: Service
-          name: api-golang-service
-          port: 8000
+          name: api-node-service
+          port: 3000
           scheme: http
       middlewares:
         - name: traefik-middleware-stripprefix

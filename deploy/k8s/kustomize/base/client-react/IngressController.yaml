@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`learn-k8s-kayn.work.gd`)
+    - match: # Host(`learn-k8s-kayn.work.gd`)
       kind: Rule
       services:
         - kind: Service

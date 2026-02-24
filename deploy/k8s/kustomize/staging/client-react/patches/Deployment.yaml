@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-react-deployment
+  namespace: demo-app
+spec:
+  replicas: 2 #base-replicas
+  template:
+    spec:
+      containers:
+        - name: client-react
+          image: hkdarealest/devops-directive-docker-course-client-react-nginx:0.2.0 #base-version
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"

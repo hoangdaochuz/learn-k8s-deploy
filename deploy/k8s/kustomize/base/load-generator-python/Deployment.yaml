@@ -1,21 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client-react-deployment
-  namespace: demo-app
+  name: load-generator-python-deployment
 spec:
   selector:
     matchLabels:
-      app: client-react
+      app: load-generator-python
   replicas: 1
   template:
     metadata:
       labels:
-        app: client-react
+        app: load-generator-python
     spec:
       containers:
-        - name: client-react
-          image: hkdarealest/devops-directive-docker-course-client-react-nginx:0.1.0
+        - name: load-generator-python
+          image: hkdarealest/devops-directive-kubernetes-course-load-generator-python:0.1.0
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -24,20 +23,14 @@ spec:
             requests:
               memory: "64Mi"
               cpu: "250m"
-          ports:
-            - containerPort: 8080
-              protocol: TCP
+          env:
+            - name: API_URL
+              value: "http://api-golang-service.demo-app.svc.cluster.local:8000"
+            - name: DELAY_MS
+              value: "1000"
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
-          volumeMounts:
-            - name: nginx-config
-              mountPath: /etc/nginx/conf.d
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-      volumes:
-        - name: nginx-config
-          configMap:
-            defaultMode: 420
-            name: client-react-nginx-config

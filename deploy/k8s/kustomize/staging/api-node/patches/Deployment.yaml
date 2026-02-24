@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-node-deployment
+  namespace: demo-app
+spec:
+  replicas: 2 #base-replicas
+  template:
+    spec:
+      containers:
+        - name: api-node
+          image: hkdarealest/devops-directive-docker-course-api-node:0.2.0 #base-version
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "150m"
+            limits:
+              memory: "256Mi"
+              cpu: "300m"

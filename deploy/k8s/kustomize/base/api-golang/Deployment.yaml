@@ -1,42 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-node-deployment
+  name: api-golang-deployment
   namespace: demo-app
 spec:
+  replicas: 1 #base-replicas
   selector:
     matchLabels:
-      app: api-node
-  replicas: 1
+      app: api-golang
   template:
     metadata:
       labels:
-        app: api-node
+        app: api-golang
     spec:
       containers:
-        - name: api-node
-          image: hkdarealest/devops-directive-docker-course-api-node:0.1.0
+        - name: api-golang
+          image: hkdarealest/devops-directive-docker-course-api-golang:0.1.0 #base-version
           imagePullPolicy: IfNotPresent
           resources:
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
             requests:
-              memory: "128Mi"
+              memory: "100Mi"
+              cpu: "250m"
+            limits:
+              memory: "200Mi"
               cpu: "500m"
           env:
             - name: PORT
-              value: "3000"
+              value: "8000"
           envFrom:
             - secretRef:
-                name: api-node-secret
+                name: api-golang-secret
           ports:
-            - containerPort: 3000
+            - containerPort: 8000
               protocol: TCP
           readinessProbe:
             httpGet:
               path: /ping
-              port: 3000
+              port: 8000
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
