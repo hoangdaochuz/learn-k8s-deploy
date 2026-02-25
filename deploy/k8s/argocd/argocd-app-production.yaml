@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-app-production
+  namespace: argocd
+spec:
+  project: demo-app
+  source:
+    repoURL: https://github.com/hoangdaochuz/learn-k8s-deploy.git
+    targetRevision: main
+    path: deploy/k8s/kustomize/production
+  destination:
+    server: https://kubernetes.default.svc # server on gke
+    namespace: demo-app-production
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

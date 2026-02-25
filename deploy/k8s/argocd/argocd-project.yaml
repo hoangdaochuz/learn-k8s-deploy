@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: demo-app
+  namespace: argocd
+spec:
+  description: Demo application project
+  sourceRepos:
+    - "https://github.com/hoangdaochuz/learn-k8s-deploy.git"
+  destinations:
+    - namespace: demo-app-staging
+      server: https://kubernetes.default.svc
+    - namespace: demo-app-production
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace

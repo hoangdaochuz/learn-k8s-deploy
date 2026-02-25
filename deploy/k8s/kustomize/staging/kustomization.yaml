@@ -7,3 +7,12 @@ resources:
   - client-react
   - ../base/traefik-middleware
   - load-generator-python
+images:
+  - name: hkdarealest/devops-directive-docker-course-api-golang
+    newTag: "0.2.0"
+  - name: hkdarealest/devops-directive-docker-course-api-node
+    newTag: "0.1.0"
+  - name: hkdarealest/devops-directive-docker-course-client-react-nginx
+    newTag: "0.1.0"
+  - name: hkdarealest/devops-directive-kubernetes-course-load-generator-python
+    newTag: "0.1.0"
