@@ -1,5 +1,7 @@
 # Demo Application
 
+> Inspired by and learned from the [DevOps Directive Kubernetes Course](https://github.com/sidpalas/devops-directive-kubernetes-course) by Sid Palas.
+
 ![](./readme-assets/screenshot.png)
 
 ## Minimal 3 tier web application
