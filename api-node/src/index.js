@@ -18,6 +18,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/ping", async (_, res) => {
+  console.log("ping received");
   res.send("pong");
 });
 
