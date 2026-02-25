@@ -11,7 +11,7 @@ images:
 - name: hkdarealest/devops-directive-docker-course-api-golang
   newTag: 755c378
 - name: hkdarealest/devops-directive-docker-course-api-node
-  newTag: 755c378
+  newTag: 6516f15
 - name: hkdarealest/devops-directive-docker-course-client-react-nginx
   newTag: 755c378
 - name: hkdarealest/devops-directive-kubernetes-course-load-generator-python
