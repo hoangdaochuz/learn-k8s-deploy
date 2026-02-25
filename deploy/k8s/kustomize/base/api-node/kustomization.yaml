@@ -5,4 +5,4 @@ resources:
   - Deployment.yaml
   - Service.yaml
   - IngressController.yaml
-  - Secret.yaml
+  - SealedSecret.yaml
