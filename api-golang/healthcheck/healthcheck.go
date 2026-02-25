@@ -33,4 +33,5 @@ func main() {
 		fmt.Println("Argh! Broken")
 		os.Exit(1)
 	}
+	fmt.Println("API is healthy! 🥳")
 }

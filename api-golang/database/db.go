@@ -19,6 +19,7 @@ func InitDB(connString string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Database pool initialized")
 	return nil
 }
 

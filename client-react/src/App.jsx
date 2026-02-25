@@ -40,6 +40,7 @@ export function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <p>Refresh the page to see the request count increase! 🚀</p>
       <p>Check the console logs of the API containers to see the logs! 🐳</p>
+      <button>New Feat</button>
     </QueryClientProvider>
   );
 }
