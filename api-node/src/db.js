@@ -19,6 +19,7 @@ pool.on("error", (err, client) => {
 
 const getDateTimeAndRequests = async () => {
   const client = await pool.connect();
+  console.log("Connected to DB");
   try {
     const result = await client.query(`
       SELECT 
@@ -43,6 +44,7 @@ const getDateTimeAndRequests = async () => {
 
 const insertRequest = async () => {
   const client = await pool.connect();
+  console.log("Connected to DB");
   try {
     const res = await client.query(
       "INSERT INTO request (api_name) VALUES ('node');",

@@ -39,6 +39,7 @@ export function App() {
       <CurrentTime api="/api/node/" />
       <ReactQueryDevtools initialIsOpen={false} />
       <p>Refresh the page to see the request count increase! 🚀</p>
+      <p>Check the console logs of the API containers to see the logs! 🐳</p>
     </QueryClientProvider>
   );
 }
