@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -56,6 +57,8 @@ func main() {
 		// Defaulting to 8000 to deconflict with unprivileged nginx container
 		port = "8000"
 	}
+
+	fmt.Printf("🚀 Starting server on port %s...\n", port)
 
 	r.Run(":" + port) // listen and serve on 0.0.0.0:8000 (or "PORT" env var if set)}
 }
