@@ -1,0 +1,141 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api-golang: ${{ steps.filter.outputs.api-golang }}
+      api-node: ${{ steps.filter.outputs.api-node }}
+      client-react: ${{ steps.filter.outputs.client-react }}
+      load-generator-python: ${{ steps.filter.outputs.load-generator-python }}
+      db-migrator: ${{ steps.filter.outputs.db-migrator }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api-golang:
+              - 'api-golang/**'
+            api-node:
+              - 'api-node/**'
+            client-react:
+              - 'client-react/**'
+            load-generator-python:
+              - 'load-generator-python/**'
+            db-migrator:
+              - 'postgresql/**'
+
+  # Build jobs - triggered for both PR and push
+  build-api-golang:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.api-golang == 'true' }}
+    uses: ./.github/workflows/build-service.yaml
+    with:
+      service-name: api-golang
+      dockerfile-path: api-golang/Dockerfile
+      context-path: api-golang
+      image-name: hkdarealest/devops-directive-docker-course-api-golang
+      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-api-node:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.api-node == 'true' }}
+    uses: ./.github/workflows/build-service.yaml
+    with:
+      service-name: api-node
+      dockerfile-path: api-node/Dockerfile
+      context-path: api-node
+      image-name: hkdarealest/devops-directive-docker-course-api-node
+      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-client-react:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.client-react == 'true' }}
+    uses: ./.github/workflows/build-service.yaml
+    with:
+      service-name: client-react
+      dockerfile-path: client-react/Dockerfile
+      context-path: client-react
+      image-name: hkdarealest/devops-directive-docker-course-client-react-nginx
+      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-load-generator:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.load-generator-python == 'true' }}
+    uses: ./.github/workflows/build-service.yaml
+    with:
+      service-name: load-generator-python
+      dockerfile-path: load-generator-python/Dockerfile
+      context-path: load-generator-python
+      image-name: hkdarealest/devops-directive-kubernetes-course-load-generator-python
+      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  # db-migrator: build-only, no Kustomize update needed (deployed as a K8s Job, not via Kustomize overlays)
+  build-db-migrator:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.db-migrator == 'true' }}
+    uses: ./.github/workflows/build-service.yaml
+    with:
+      service-name: db-migrator
+      dockerfile-path: postgresql/Dockerfile
+      context-path: postgresql
+      image-name: hkdarealest/devops-directive-kubernetes-course-db-migrator
+      push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  # Update Kustomize tags - only on push to main
+  update-api-golang-tag:
+    needs: build-api-golang
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/update-kustomize.yaml
+    with:
+      image-name: hkdarealest/devops-directive-docker-course-api-golang
+      image-tag: ${{ needs.build-api-golang.outputs.image-tag }}
+
+  update-api-node-tag:
+    needs: build-api-node
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/update-kustomize.yaml
+    with:
+      image-name: hkdarealest/devops-directive-docker-course-api-node
+      image-tag: ${{ needs.build-api-node.outputs.image-tag }}
+
+  update-client-react-tag:
+    needs: build-client-react
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/update-kustomize.yaml
+    with:
+      image-name: hkdarealest/devops-directive-docker-course-client-react-nginx
+      image-tag: ${{ needs.build-client-react.outputs.image-tag }}
+
+  update-load-generator-tag:
+    needs: build-load-generator
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/update-kustomize.yaml
+    with:
+      image-name: hkdarealest/devops-directive-kubernetes-course-load-generator-python
+      image-tag: ${{ needs.build-load-generator.outputs.image-tag }}

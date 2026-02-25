@@ -1,0 +1,47 @@
+name: Update Kustomize Image Tags
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: update-kustomize
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update staging image tag
+        run: |
+          cd deploy/k8s/kustomize/staging
+          kustomize edit set image ${{ inputs.image-name }}:${{ inputs.image-tag }}
+
+      - name: Update production image tag
+        run: |
+          cd deploy/k8s/kustomize/production
+          kustomize edit set image ${{ inputs.image-name }}:${{ inputs.image-tag }}
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add deploy/k8s/kustomize/
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "[skip ci] update image tag for ${{ inputs.image-name }} to ${{ inputs.image-tag }}"
+          git pull --rebase
+          git push

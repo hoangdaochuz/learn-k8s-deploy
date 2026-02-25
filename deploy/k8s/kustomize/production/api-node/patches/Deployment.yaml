@@ -9,7 +9,6 @@ spec:
     spec:
       containers:
         - name: api-node
-          image: hkdarealest/devops-directive-docker-course-api-node:0.3.0 #base-version
           resources:
             requests:
               memory: "128Mi"

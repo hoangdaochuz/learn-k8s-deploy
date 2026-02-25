@@ -9,7 +9,6 @@ spec:
     spec:
       containers:
         - name: client-react
-          image: hkdarealest/devops-directive-docker-course-client-react-nginx:0.3.0 #base-version
           resources:
             requests:
               memory: "64Mi"

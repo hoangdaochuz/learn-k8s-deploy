@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-app-staging
+  namespace: argocd
+spec:
+  project: demo-app
+  source:
+    repoURL: https://github.com/hoangdaochuz/learn-k8s-deploy.git
+    targetRevision: main
+    path: deploy/k8s/kustomize/staging
+  destination:
+    server: https://kubernetes.default.svc # server on GKE
+    namespace: demo-app-staging
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

@@ -6,6 +6,9 @@ includes:
   postgres:
     taskfile: ./postgres/Taskfile.yaml
     dir: ./postgres
+  argocd:
+    taskfile: ./argocd/Taskfile.yaml
+    dir: ./argocd
 
 tasks:
   apply-api-golang:

@@ -9,7 +9,6 @@ spec:
     spec:
       containers:
         - name: api-golang
-          image: hkdarealest/devops-directive-docker-course-api-golang:0.2.0 #base-version
           resources:
             requests:
               memory: "100Mi"
