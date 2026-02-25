@@ -8,3 +8,11 @@ func TestOneEqualsOne(t *testing.T) {
 		t.Errorf("1 != %d; want 1", val)
 	}
 }
+
+// Example test for testing cicd pipeline.
+func TestTwoEqualsTwo(t *testing.T) {
+	val := 2
+	if val != 2 {
+		t.Errorf("2 != %d; want 2", val)
+	}
+}

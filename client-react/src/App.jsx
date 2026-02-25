@@ -38,6 +38,7 @@ export function App() {
       <CurrentTime api="/api/golang/" />
       <CurrentTime api="/api/node/" />
       <ReactQueryDevtools initialIsOpen={false} />
+      <p>Refresh the page to see the request count increase! 🚀</p>
     </QueryClientProvider>
   );
 }
