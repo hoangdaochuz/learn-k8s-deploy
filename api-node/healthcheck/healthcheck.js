@@ -7,6 +7,7 @@ var options = {
   path: '/ping',
 };
 
+console.info('Checking API health...');
 var request = http.request(options, (res) => {
   console.info('STATUS: ' + res.statusCode);
   process.exitCode = res.statusCode === 200 ? 0 : 1;
@@ -17,5 +18,4 @@ request.on('error', function (err) {
   console.error('ERROR', err);
   process.exit(1);
 });
-
 request.end();
